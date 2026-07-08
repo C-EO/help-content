@@ -33,6 +33,10 @@ You can also use your own server - although you will need to [register it](/:pro
 
 Depending on which cloud or registered server you selected above, we can now choose options for our new cluster, such as region and capacity. In this example we'll choose *3* servers with 2GB of RAM each in the Amsterdam 3 Region.
 
+<Callout type="info" title="ARM support">
+Clusters support both AMD/Intel (x86-64) and ARM64 servers. To use ARM, choose a cloud instance type that's ARM-based when picking your cluster's capacity, or, for your own servers, run the [registration script](/:product/:version?/servers/registered-servers#register-a-server) on an ARM machine.
+</Callout>
+
 <Callout type="info" title="First server is always the master node">
  The first server in your cluster will always be your Kubernetes master node. You can decide later if you would like this server to share application workloads or only run Kubernetes management tasks. 
 </Callout>
