@@ -21,7 +21,6 @@ A Rails application type in the manifest file gives you fine control over things
 |`include_submodules`|<Glyph icon="redeploy" />|Set this to `false` to exclude any Git submodules from being pulled during a build. Default is `true`|All|
 |`instance_service_account_name`|<Glyph icon="build" />|The name of the [GCE Service Account](/:product/:version?/build-and-config/advanced-cloud-configurations#using-gce-service-accounts-with-cloud-66) that should be used when provisioning this server.|GCE|
 |`keep_releases`|<Glyph icon="redeploy" />|Specify the number of releases to keep on your server(s). Default is `5`.|All|
-|`locked_passenger_version`|<Glyph icon="upgrade" />|Force the app to use a specific version of Passenger. This is not supported on Passenger Enterprise applications.|All|
 |`memory_allocator`|<Glyph icon="upgrade" />|The memory allocation library that will be used for your Ruby installation. Options are `malloc` or `jemalloc`. Defaults to `malloc`.|All|
 |`nameservers`|<Glyph icon="build" />|Set DNS servers for your application.  Note that if you specify empty array i.e **[ ]**, it won't add any nameserver to your servers. Default is an empty array: `[ ]`|All|
 |`network` / `mode`|<Glyph icon="build" />|Specifies whether your servers should communicate over `private` or `public` IP addresses. Defaults to `private` if your servers are *either* all cloud *or* all [Registered](/:product/:version?/servers/registered-servers). If your application uses a *mix* of cloud and Registered servers, the default will be `public`.|All|
@@ -54,7 +53,6 @@ rails:
     reserved_server_memory: 0 #default value
     passenger_process_memory: 200 #default value
     memory_allocator: jemalloc # malloc is default
-    locked_passenger_version: 4.0.59
     activeprotect:
       whitelist: 123.123.123.123,234.234.234.234
       http_ban_rate: 2000 # Default
@@ -130,7 +128,6 @@ rack:
     reserved_server_memory: 0 #default value
     passenger_process_memory: 200 #default value
     memory_allocator: jemalloc # malloc is default
-    locked_passenger_version: 4.0.59
     activeprotect:
       whitelist: 123.123.123.123,234.234.234.234
     vpc_id: vpc-64872001
