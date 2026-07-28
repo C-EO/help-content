@@ -8,6 +8,18 @@ title: Cloud 66 Technical specifications
 Your servers are deployed with <OperatingSystemsWrapper />.
 </PerProduct>
 
+<PerProduct includes={["rails", "deploy"]} excludeVersions={['3']}>
+### How we choose your server's operating system
+
+Unless you pin a version in your [Manifest file](/:product/:version?/manifest/_server-definitions#specifying-an-operating-system-version), we choose the operating system for each new server as follows:
+
+1. **New applications** are provisioned with the latest LTS release we support.
+2. **Existing applications** keep the release already running on their servers of that type. We will not introduce a newer release into a running application on your behalf, so that servers which are meant to be identical stay identical.
+3. **Some components stay on an older release** where the newer one has no upstream packages yet. MongoDB is the current example — MongoDB servers are provisioned with Ubuntu 24.04.
+
+This means that scaling up a server on an established application will match its existing servers rather than jumping to the newest release. To move an existing application forward, either set `operating_system` in your Manifest file or follow our guide to [upgrading servers running older versions of Ubuntu](/:product/:version?/servers/out-of-ubuntu-lts).
+</PerProduct>
+
 ## Supported cloud providers
 
 Cloud 66 currently supports the following cloud providers:
