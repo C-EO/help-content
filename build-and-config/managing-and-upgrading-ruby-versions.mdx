@@ -40,15 +40,7 @@ Older versions of Ruby depend on system libraries and compiler toolchains that a
 
 **Ruby versions below 2.5.0 are no longer supported.** These depend on package bindings only available on Ubuntu 18.04 and older, which is long out of LTS and no longer offered by most cloud providers. Attempting to deploy one will fail with an error asking you to upgrade Ruby to 2.5.0 or above. Please [log a support query](https://app.cloud66.com/support_tickets/new) if you need assistance with this.
 
-**Ruby versions below 3.2.0 are not available on Ubuntu 26.04.** They remain available on Ubuntu 22.04 and 24.04. If your application needs an older version of Ruby, either upgrade Ruby to 3.2.0 or above, or pin the operating system in your Manifest file:
-
-```yaml
-rails:
-  configuration:
-    operating_system: ubuntu2404
-```
-
-Ruby 3.2.0 and above is available on every version of Ubuntu we currently support. Since pinning an operating system means staying on a release that will eventually reach end-of-life, upgrading Ruby is usually the better long-term option.
+Ruby 2.5.0 and above is available on every version of Ubuntu we currently support, so if you are pinned to an old operating system it is almost always better to upgrade Ruby than to stay on a release that is approaching (or past) end-of-life.
 
 The version of Ubuntu used by your application is set using your application's [Manifest file](/:product/:version?/manifest/_rails-rack).
 
