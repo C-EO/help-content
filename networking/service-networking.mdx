@@ -171,6 +171,53 @@ Some example of default ports used by popular programming frameworks or applicat
 |InfluxDB|8083, 8086, 8090, 8099|
 |Python (Django)|8000|
 
+<PerProduct includes={["deploy"]} includeVersions={['3']}>
+## Traffic matching
+
+Traffic reaches your services through **traffic sources** - a combination of a domain name and an optional URL path. You manage these from the *Traffic* page of your cluster rather than in a configuration file.
+
+A traffic source with no path sends every request for that domain to a single service. Adding a path allows several services in the same application to share one domain.
+
+### Routing by URL path
+
+For example, you might serve the front end and the API of the same product from separate services:
+
+| Address | Path | Service |
+| --- | --- | --- |
+| `example.com` | | `web` |
+| `example.com` | `/api` | `api` |
+
+Requests to `example.com/api`, and anything beneath it such as `example.com/api/v2/users`, are routed to the `api` service. Every other request for `example.com` goes to `web`.
+
+Path matching is *segment-exact*, so a path of `/api` matches `/api` and `/api/v2` but does not match `/api-internal` or `/apiary`.
+
+<Callout type="info" title="The matched path is removed">
+The path you match on is stripped from the request before it reaches your service. A service behind `/api` receives a request for `/v2/users` rather than `/api/v2/users`, so it doesn't need to know which path it has been mounted at. Redirects and maintenance mode still see the original URL.
+</Callout>
+
+### Adding a traffic source
+
+1. Log into your [Dashboard](https://app.cloud66.com/) and open your cluster
+2. Click *Network & Traffic* in the left-hand nav and open the *Traffic* tab
+3. Click *New Traffic Source*
+4. Enter the **Domain name**, without `http://`, `https://` or a trailing slash
+5. Optionally enter a **Path** such as `/app` or `/api/v2`. Leave this blank to route all requests for the domain.
+6. Choose the **Destination service**
+7. Choose how the [SSL certificate](/:product/:version?/security/ssl) for this domain should be issued or supplied
+8. Click *Save*
+
+You will also need to point the domain's DNS record at your cluster's load balancer so that traffic can reach it.
+
+### Rules and limitations
+
+- **Paths require HTTP or HTTPS.** A path can only be set on a service that exposes an external HTTP or HTTPS port. TCP and UDP traffic is matched on the domain alone and cannot be routed by path.
+- **A domain belongs to a single application.** All paths on a given domain must point to services within the same application.
+- **Each domain and path combination must be unique** across the cluster.
+- **Paths must be valid URL paths** beginning with `/`. They cannot contain spaces, query strings or fragments. Trailing slashes are ignored, so `/app/` and `/app` are treated as the same path.
+- Services created before path routing was introduced are updated automatically the first time you add a path. If a service uses customized templates that predate the feature, update them to the latest version first.
+</PerProduct>
+
+<PerProduct includes={["rails", "deploy"]} excludeVersions={['3']}>
 ## Traffic matching
 
 The `traffic_matches` option allows you to route incoming traffic to different services based on the incoming domain name. You can specify an array of domains (as strings) to match to your service.
@@ -223,6 +270,7 @@ The `traffic_matches` option can also be used to ensure that any and all traffic
 ```
 
 Be cautious with this approach as it is effectively a global setting and may disrupt your other services if there are any conflicts.
+</PerProduct>
 
 ## DNS Behaviour
 

@@ -36,10 +36,11 @@ If your `manifest.yml` specifies a different version to your Gemfile, this will 
 
 ## Ruby and Ubuntu versions
 
-Older versions of Ruby require that your application servers are built using older versions of Ubuntu. 
+Older versions of Ruby depend on system libraries and compiler toolchains that are no longer present in current versions of Ubuntu, so the two are linked.
 
-- If your Ruby version is < 2.5.0 then the maximum allowed version of Ubuntu is 18.04
-- If your Ruby version < 3.1.0 (but higher than 2.5.0) then the maximum allowed version of Ubuntu is 20.04
+**Ruby versions below 2.5.0 are no longer supported.** These depend on package bindings only available on Ubuntu 18.04 and older, which is long out of LTS and no longer offered by most cloud providers. Attempting to deploy one will fail with an error asking you to upgrade Ruby to 2.5.0 or above. Please [log a support query](https://app.cloud66.com/support_tickets/new) if you need assistance with this.
+
+Ruby 2.5.0 and above is available on every version of Ubuntu we currently support, so if you are pinned to an old operating system it is almost always better to upgrade Ruby than to stay on a release that is approaching (or past) end-of-life.
 
 The version of Ubuntu used by your application is set using your application's [Manifest file](/:product/:version?/manifest/_rails-rack).
 
