@@ -1,0 +1,9 @@
+# Order configuration for the MCP Server category
+
+pages:
+  - what-is-the-mcp-server
+  - connecting-your-ai-agent
+  - permissions-and-scopes
+  - approving-sensitive-actions
+  - tools-reference
+  - troubleshooting
