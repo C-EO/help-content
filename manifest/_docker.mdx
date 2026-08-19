@@ -58,6 +58,72 @@ docker:
     image_keep_count: 15
 ```
 
+<PerProduct includes={["deploy"]} excludeVersions={['3']}>
+
+## Kubernetes control plane configuration
+
+<Callout type="info" title="Container Service V2 only">
+The settings below apply to **Cloud 66 Container Service V2** applications and [Clusters](/:product/:version?/getting-started/getting-started-with-clusters) (Kubernetes). They are not available on Container Service V3.
+</Callout>
+
+You can tune specific parts of your Kubernetes control plane - the kubelet and the API server (`kube-apiserver`) - directly from your manifest. These settings only take effect on servers built (or nodes joined) *after* the manifest change; they are not retroactively applied to servers that are already running. If a setting is invalid, the whole block is dropped and a warning is logged during your next deploy - the rest of the deploy still proceeds.
+
+On a standalone Kubernetes application, nest these settings under `docker`, as shown below. On a [Cloud 66 Cluster](/:product/:version?/getting-started/getting-started-with-clusters), nest them under `cluster` instead.
+
+### Kubelet configuration
+
+Requires Kubernetes 1.30 or newer.
+
+Cloud 66 lets you tune when, and how aggressively, the kubelet garbage-collects unused container images - useful if your root disk is at risk of filling up with pulled images. Configure it under `configuration / kubernetes / kubelet / config`:
+
+|Option|Description|Default|
+|--- |--- |--- |
+|`imageGCHighThresholdPercent`|Disk usage percentage (`0`-`99`) at which image garbage collection is triggered.|`80`|
+|`imageGCLowThresholdPercent`|Disk usage percentage (`0`-`99`) that image garbage collection attempts to free the disk down to.|`70`|
+
+`imageGCLowThresholdPercent` must be at least 5 percentage points below `imageGCHighThresholdPercent`, whether you declare one of these fields or both - the kubelet refuses to start if the low threshold isn't comfortably below the high one.
+
+```yaml
+docker:
+  configuration:
+    kubernetes:
+      kubelet:
+        config:
+          imageGCHighThresholdPercent: 70
+          imageGCLowThresholdPercent: 55
+```
+
+No other kubelet settings are currently supported. This includes fields Cloud 66 already sets for you, such as `cgroupDriver` and `resolvConf` - these, and any other field, will be rejected.
+
+### API server configuration (kube-apiserver)
+
+Requires Kubernetes 1.32 or newer.
+
+You can set a small number of `kube-apiserver` flags, most commonly to support external OIDC identity federation (for example, IAM Roles for Service Accounts on AWS), under `configuration / kubernetes / apiserver / extra_args`:
+
+|Flag|Description|
+|--- |--- |
+|`service-account-issuer`|The OIDC issuer URL for service account tokens. Must be a valid `https` URL, with no username or password embedded in it. Accepts a single value or a list, so you can rotate an issuer without invalidating tokens already in circulation - list the new issuer first.|
+|`service-account-jwks-uri`|The URL where the JSON Web Key Set used to verify service account tokens is published. Must be a valid `https` URL, with no username or password embedded in it.|
+|`api-audiences`|The list of audiences your service account tokens are issued for. If set, it must include the first value of `service-account-issuer`.|
+
+```yaml
+docker:
+  configuration:
+    kubernetes:
+      apiserver:
+        extra_args:
+          service-account-issuer: https://oidc.example.com/my-cluster
+          service-account-jwks-uri: https://oidc.example.com/my-cluster/openid/v1/jwks
+          api-audiences:
+            - https://oidc.example.com/my-cluster
+            - sts.amazonaws.com
+```
+
+No other `kube-apiserver` flags are currently supported.
+
+</PerProduct>
+
 ## Customizing Nginx for containerized apps
 
 Nginx uses the `docker` node in `manifest.yml`. See [Nginx configuration](/:product/:version?/manifest/_nginx) for details.
